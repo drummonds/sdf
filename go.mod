@@ -6,7 +6,6 @@ require (
 	github.com/deadsy/sdfx v0.0.0-20220428051248-ab3af168a1af
 	github.com/fogleman/fauxgl v0.0.0-20200818143847-27cddc103802
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
-	github.com/soypat/sdf v0.0.0-20220503123624-8c136c9899b2
 	gonum.org/v1/gonum v0.11.0
 	gonum.org/v1/plot v0.11.0
 )
