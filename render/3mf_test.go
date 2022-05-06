@@ -3,8 +3,8 @@ package render_test
 import (
 	"testing"
 
-	"github.com/soypat/sdf/form3"
-	"github.com/soypat/sdf/render"
+	"github.com/drummonds/sdf/form3"
+	"github.com/drummonds/sdf/render"
 	"gonum.org/v1/gonum/spatial/r3"
 )
 

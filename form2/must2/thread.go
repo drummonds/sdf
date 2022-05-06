@@ -5,7 +5,7 @@ import (
 	"log"
 	"math"
 
-	"github.com/soypat/sdf"
+	"github.com/drummonds/sdf"
 )
 
 // Screws

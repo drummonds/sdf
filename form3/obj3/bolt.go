@@ -1,9 +1,9 @@
 package obj3
 
 import (
-	"github.com/soypat/sdf"
-	form2 "github.com/soypat/sdf/form2/must2"
-	form3 "github.com/soypat/sdf/form3/must3"
+	"github.com/drummonds/sdf"
+	form2 "github.com/drummonds/sdf/form2/must2"
+	form3 "github.com/drummonds/sdf/form3/must3"
 	"gonum.org/v1/gonum/spatial/r3"
 )
 

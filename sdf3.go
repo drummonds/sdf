@@ -3,8 +3,8 @@ package sdf
 import (
 	"math"
 
-	"github.com/soypat/sdf/internal/d2"
-	"github.com/soypat/sdf/internal/d3"
+	"github.com/drummonds/sdf/internal/d2"
+	"github.com/drummonds/sdf/internal/d3"
 	"gonum.org/v1/gonum/spatial/r2"
 	"gonum.org/v1/gonum/spatial/r3"
 )

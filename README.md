@@ -1,6 +1,6 @@
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/soypat/sdf)](https://goreportcard.com/report/github.com/soypat/sdf)
-[![GoDoc](https://godoc.org/github.com/soypat/sdf?status.svg)](https://godoc.org/github.com/soypat/sdf/sdf)
+[![Go Report Card](https://goreportcard.com/badge/github.com/drummonds/sdf)](https://goreportcard.com/report/github.com/drummonds/sdf)
+[![GoDoc](https://godoc.org/github.com/drummonds/sdf?status.svg)](https://godoc.org/github.com/drummonds/sdf/sdf)
 
 # sdf (originally sdfx)
 
@@ -41,7 +41,7 @@ Advantages of [deadsy/sdfx](https://github.com/deadsy/sdfx):
 - More helper functions
 - Working 2D renderer
 
-Advantages of soypat/sdf:
+Advantages of drummonds/sdf:
 
 - Very fast rendering
   - `deadsy/sdfx` is over 2 times slower and has ~5 times more allocations.
@@ -75,12 +75,12 @@ sdfx is needlessly slow. Here is a benchmark rendering a threaded bolt:
 $ go test -benchmem -run=^$ -bench ^(BenchmarkSDFXBolt|BenchmarkBolt)$ ./render
 goos: linux
 goarch: amd64
-pkg: github.com/soypat/sdf/render
+pkg: github.com/drummonds/sdf/render
 cpu: AMD Ryzen 5 3400G with Radeon Vega Graphics    
 BenchmarkSDFXBolt-8   	       6	 196941244 ns/op	14700786 B/op	   98261 allocs/op
 BenchmarkBolt-8       	      13	  87547265 ns/op	18136785 B/op	   20754 allocs/op
 PASS
-ok  	github.com/soypat/sdf/render	4.390s
+ok  	github.com/drummonds/sdf/render	4.390s
 ```
 `BenchmarkBolt-8` is this implementation of Octree. `BenchmarkSDFXBolt-8` is the `sdfx` implementation of said algorithm.
 

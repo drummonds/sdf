@@ -3,9 +3,9 @@ package form2
 import (
 	"runtime/debug"
 
-	"github.com/soypat/sdf"
-	"github.com/soypat/sdf/form2/must2"
-	"github.com/soypat/sdf/internal/d2"
+	"github.com/drummonds/sdf"
+	"github.com/drummonds/sdf/form2/must2"
+	"github.com/drummonds/sdf/internal/d2"
 	"gonum.org/v1/gonum/spatial/r2"
 )
 

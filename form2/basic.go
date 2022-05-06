@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"github.com/soypat/sdf"
-	"github.com/soypat/sdf/form2/must2"
+	"github.com/drummonds/sdf"
+	"github.com/drummonds/sdf/form2/must2"
 	"gonum.org/v1/gonum/spatial/r2"
 )
 

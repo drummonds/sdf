@@ -7,9 +7,9 @@ import (
 
 	"github.com/deadsy/sdfx/obj"
 	sdfxrender "github.com/deadsy/sdfx/render"
-	"github.com/soypat/sdf/form3/obj3"
-	"github.com/soypat/sdf/internal/d3"
-	"github.com/soypat/sdf/render"
+	"github.com/drummonds/sdf/form3/obj3"
+	"github.com/drummonds/sdf/internal/d3"
+	"github.com/drummonds/sdf/render"
 	"gonum.org/v1/gonum/spatial/r3"
 )
 

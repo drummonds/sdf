@@ -3,8 +3,8 @@ package form3
 import (
 	"runtime/debug"
 
-	"github.com/soypat/sdf"
-	"github.com/soypat/sdf/form3/must3"
+	"github.com/drummonds/sdf"
+	"github.com/drummonds/sdf/form3/must3"
 )
 
 // Screw returns a screw SDF3.

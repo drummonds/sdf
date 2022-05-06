@@ -10,9 +10,9 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/drummonds/sdf/internal/d3"
 	"github.com/fogleman/fauxgl"
 	"github.com/nfnt/resize"
-	"github.com/soypat/sdf/internal/d3"
 	"gonum.org/v1/gonum/spatial/r3"
 )
 

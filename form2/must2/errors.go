@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/soypat/sdf/internal/d2"
+	"github.com/drummonds/sdf/internal/d2"
 	"gonum.org/v1/gonum/spatial/r2"
 )
 

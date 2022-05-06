@@ -5,8 +5,8 @@ import (
 	"math"
 	"sync"
 
-	"github.com/soypat/sdf"
-	"github.com/soypat/sdf/internal/d3"
+	"github.com/drummonds/sdf"
+	"github.com/drummonds/sdf/internal/d3"
 	"gonum.org/v1/gonum/spatial/r3"
 )
 

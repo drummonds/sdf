@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/soypat/sdf"
-	form3 "github.com/soypat/sdf/form3/must3"
-	"github.com/soypat/sdf/helpers/matter"
-	"github.com/soypat/sdf/render"
+	"github.com/drummonds/sdf"
+	form3 "github.com/drummonds/sdf/form3/must3"
+	"github.com/drummonds/sdf/helpers/matter"
+	"github.com/drummonds/sdf/render"
 	"gonum.org/v1/gonum/spatial/r3"
 )
 

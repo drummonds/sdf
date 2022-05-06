@@ -1,8 +1,8 @@
 package obj2
 
 import (
-	"github.com/soypat/sdf"
-	form2 "github.com/soypat/sdf/form2/must2"
+	"github.com/drummonds/sdf"
+	form2 "github.com/drummonds/sdf/form2/must2"
 	"gonum.org/v1/gonum/spatial/r2"
 )
 
@@ -108,7 +108,7 @@ func EuroRackPanel(k EuroRackParams) (s sdf.SDF2, err error) {
 		panic("k.CornerRadius < 0")
 	}
 	if k.HoleDiameter <= 0 {
-		panic("got <=0 hole diameter. file issue at github.com/soypat/sdf if this panic is incorrect")
+		panic("got <=0 hole diameter. file issue at github.com/drummonds/sdf if this panic is incorrect")
 		k.HoleDiameter = erHoleDiameter
 	}
 

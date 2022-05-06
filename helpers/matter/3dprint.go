@@ -1,6 +1,6 @@
 package matter
 
-import "github.com/soypat/sdf"
+import "github.com/drummonds/sdf"
 
 var (
 	// PLA (polylactic acid) is the most widely used plastic filament material in 3D printing.

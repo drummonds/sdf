@@ -1,7 +1,7 @@
 package render
 
 import (
-	"github.com/soypat/sdf/internal/d3"
+	"github.com/drummonds/sdf/internal/d3"
 	"gonum.org/v1/gonum/spatial/r2"
 	"gonum.org/v1/gonum/spatial/r3"
 )
