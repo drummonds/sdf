@@ -66,7 +66,7 @@ func Cut2D(sdf SDF2, a, v r2.Vec) SDF2 {
 	s.sdf = sdf
 	s.a = a
 	v = r2.Unit(v)
-	s.n = r2.Vec{-v.Y, v.X}
+	s.n = d2.NewV2(-v.Y, v.X)
 	// TODO - cut the bounding box
 	s.bb = sdf.BoundingBox()
 	return &s
@@ -125,7 +125,7 @@ type ScaleUniformSDF2 struct {
 // ScaleUniform2D scales an SDF2 by k on each axis.
 // Distance is correct with scaling.
 func ScaleUniform2D(sdf SDF2, k float64) SDF2 {
-	m := Scale2d(r2.Vec{k, k})
+	m := Scale2d(d2.NewV2(k, k))
 	return &ScaleUniformSDF2{
 		sdf:  sdf,
 		k:    k,
@@ -199,7 +199,7 @@ func (s *array2) Evaluate(p r2.Vec) float64 {
 	d := math.MaxFloat64
 	for j := 0; j < s.num[0]; j++ {
 		for k := 0; k < s.num[1]; k++ {
-			x := p.Sub(r2.Vec{float64(j) * s.step.X, float64(k) * s.step.Y})
+			x := p.Sub(d2.NewV2(float64(j)*s.step.X, float64(k)*s.step.Y))
 			d = s.min(d, s.sdf.Evaluate(x))
 		}
 	}
@@ -241,7 +241,7 @@ func RotateUnion2D(sdf SDF2, num int, step m33) SDF2 {
 		bbMax = d2.MaxElem(bbMax, vset.Max())
 		MulVertices2(vset, step)
 	}
-	s.bb = d2.Box{bbMin, bbMax}
+	s.bb = d2.Box{Min: bbMin, Max: bbMax}
 	return &s
 }
 
@@ -293,7 +293,7 @@ func RotateCopy2D(sdf SDF2, n int) SDF2 {
 			rmax = l
 		}
 	}
-	s.bb = d2.Box{r2.Vec{-rmax, -rmax}, r2.Vec{rmax, rmax}}
+	s.bb = d2.Box{Min: d2.NewV2(-rmax, -rmax), Max: d2.NewV2(rmax, rmax)}
 	return &s
 }
 
@@ -349,9 +349,9 @@ func Slice2D(sdf SDF3, a, n r3.Vec) SDF2 {
 		va := v.Sub(s.a)
 		pa := va.Sub(r3.Scale(r3.Dot(n, va), n))
 		// work out the 3d point in terms of the 2d unit vectors
-		vec[i] = r2.Vec{pa.Dot(s.u), pa.Dot(s.v)}
+		vec[i] = d2.NewV2(pa.Dot(s.u), pa.Dot(s.v))
 	}
-	s.bb = d2.Box{vec.Min(), vec.Max()}
+	s.bb = d2.Box{Min: vec.Min(), Max: vec.Max()}
 	return &s
 }
 

@@ -49,14 +49,14 @@ func R3ToI(a r3.Vec) V3i {
 //
 //Deprecated: R3FromI is deprecated.
 func R3FromI(a V3i) r3.Vec {
-	return r3.Vec{float64(a[0]), float64(a[1]), float64(a[2])}
+	return d3.NewV3(float64(a[0]), float64(a[1]), float64(a[2]))
 }
 
 // R2FromI temporary home for this function.
 //
 // Deprecated: R2FromI is deprecated.
 func R2FromI(a V2i) r2.Vec {
-	return r2.Vec{float64(a[0]), float64(a[1])}
+	return d2.NewV2(float64(a[0]), float64(a[1]))
 }
 
 // clamp x between a and b, assume a <= b
@@ -96,7 +96,7 @@ func sawTooth(x, period float64) float64 {
 // MinRound returns a minimum function that uses a quarter-circle to join the two objects smoothly.
 func MinRound(k float64) MinFunc {
 	return func(a, b float64) float64 {
-		u := d2.MaxElem(r2.Vec{k - a, k - b}, r2.Vec{0, 0})
+		u := d2.MaxElem(d2.NewV2(k-a, k-b), d2.NewV2(0, 0))
 		return math.Max(k, math.Min(a, b)) - r2.Norm(u)
 	}
 }
@@ -153,7 +153,7 @@ type ExtrudeFunc func(p r3.Vec) r2.Vec
 
 // NormalExtrude returns an extrusion function.
 func NormalExtrude(p r3.Vec) r2.Vec {
-	return r2.Vec{p.X, p.Y}
+	return d2.NewV2(p.X, p.Y)
 }
 
 // TwistExtrude returns an extrusion function that twists with z.
@@ -161,38 +161,38 @@ func TwistExtrude(height, twist float64) ExtrudeFunc {
 	k := twist / height
 	return func(p r3.Vec) r2.Vec {
 		m := Rotate(p.Z * k)
-		return m.MulPosition(r2.Vec{p.X, p.Y})
+		return m.MulPosition(d2.NewV2(p.X, p.Y))
 	}
 }
 
 // ScaleExtrude returns an extrusion functions that scales with z.
 func ScaleExtrude(height float64, scale r2.Vec) ExtrudeFunc {
-	inv := r2.Vec{1 / scale.X, 1 / scale.Y}
+	inv := d2.NewV2(1/scale.X, 1/scale.Y)
 	// TODO verify
-	m := d2.DivElem(inv.Sub(r2.Vec{1, 1}), d2.Elem(height)) // slope
+	m := d2.DivElem(inv.Sub(d2.NewV2(1, 1)), d2.Elem(height)) // slope
 	b := r2.Add(d2.DivElem(inv, d2.Elem(2)), d2.Elem(0.5))
 	// b := inv.DivScalar(2).AddScalar(0.5)     // intercept
 	return func(p r3.Vec) r2.Vec {
-		return d2.MulElem(r2.Vec{p.X, p.Y}, r2.Scale(p.Z, m).Add(b))
+		return d2.MulElem(d2.NewV2(p.X, p.Y), r2.Scale(p.Z, m).Add(b))
 	}
 }
 
 // ScaleTwistExtrude returns an extrusion function that scales and twists with z.
 func ScaleTwistExtrude(height, twist float64, scale r2.Vec) ExtrudeFunc {
 	k := twist / height
-	inv := r2.Vec{1 / scale.X, 1 / scale.Y}
-	m := r2.Sub(inv, d2.DivElem(r2.Vec{1, 1}, d2.Elem(height))) // slope
-	// m := inv.Sub(r2.Vec{1, 1}).DivScalar(height) // slope
+	inv := d2.NewV2(1/scale.X, 1/scale.Y)
+	m := r2.Sub(inv, d2.DivElem(d2.NewV2(1, 1), d2.Elem(height))) // slope
+	// m := inv.Sub(d2.NewV2(1, 1)).DivScalar(height) // slope
 	b := r2.Add(d2.DivElem(inv, d2.Elem(2)), d2.Elem(0.5))
 	// b := inv.DivScalar(2).AddScalar(0.5) // intercept
 	return func(p r3.Vec) r2.Vec {
 		// Scale and then Twist
-		// pnew := r2.Vec{p.X, p.Y}.Mul(m.MulScalar(p.Z).Add(b)) // Scale
-		pnew := d2.MulElem(r2.Vec{p.X, p.Y}, r2.Add(r2.Scale(p.Z, m), b))
+		// pnew := d2.NewV2(p.X, p.Y).Mul(m.MulScalar(p.Z).Add(b)) // Scale
+		pnew := d2.MulElem(d2.NewV2(p.X, p.Y), r2.Add(r2.Scale(p.Z, m), b))
 		return Rotate(p.Z * k).MulPosition(pnew) // Twist
 
 		// Twist and then scale
-		//pnew := Rotate(p.Z * k).MulPosition(r2.Vec{p.X, p.Y})
+		//pnew := Rotate(p.Z * k).MulPosition(d2.NewV2(p.X, p.Y))
 		//return pnew.Mul(m.MulScalar(p.Z).Add(b))
 	}
 }
@@ -243,8 +243,11 @@ func raycast3(s SDF3, from, dir r3.Vec, scaleAndSigmoid, stepScale, epsilon, max
 
 // raycast2 see Raycast3. NOTE: implementation using Raycast3 (inefficient?)
 func raycast2(s SDF2, from, dir r2.Vec, scaleAndSigmoid, stepScale, epsilon, maxDist float64, maxSteps int) (r2.Vec, float64, int) {
-	collision, t, steps := raycast3(Extrude3D(s, 1), r3.Vec{from.X, from.Y, 0}, r3.Vec{dir.X, dir.Y, 0}, scaleAndSigmoid, stepScale, epsilon, maxDist, maxSteps)
-	return r2.Vec{collision.X, collision.Y}, t, steps
+	collision, t, steps := raycast3(Extrude3D(s, 1),
+		d3.NewV3(from.X, from.Y, 0),
+		d3.NewV3(dir.X, dir.Y, 0),
+		scaleAndSigmoid, stepScale, epsilon, maxDist, maxSteps)
+	return d2.NewV2(collision.X, collision.Y), t, steps
 }
 
 // Normals

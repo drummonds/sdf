@@ -139,3 +139,8 @@ func FromR2(v r2.Vec, z float64) r3.Vec {
 		Z: z,
 	}
 }
+
+// New func to replace composite literal construction with unkeyed fields
+func NewV3(x, y, z float64) r3.Vec {
+	return r3.Vec{X: x, Y: y, Z: z}
+}

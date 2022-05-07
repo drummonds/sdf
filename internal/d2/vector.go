@@ -123,7 +123,7 @@ type Pol struct {
 
 // PolarToCartesian converts a polar to a cartesian coordinate.
 func (a Pol) PolarToCartesian() r2.Vec {
-	return r2.Vec{a.R * math.Cos(a.Theta), a.R * math.Sin(a.Theta)}
+	return NewV2(a.R*math.Cos(a.Theta), a.R*math.Sin(a.Theta))
 }
 
 // CartesianToPolar converts a cartesian to a polar coordinate.
@@ -146,3 +146,8 @@ type SortByX Set
 func (a SortByX) Len() int           { return len(a) }
 func (a SortByX) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a SortByX) Less(i, j int) bool { return a[i].X < a[j].X }
+
+// New func to replace composite literal construction with unkeyed fields
+func NewV2(x, y float64) r2.Vec {
+	return r2.Vec{X: x, Y: y}
+}

@@ -292,14 +292,14 @@ func (a m44) MulPosition(b r3.Vec) r3.Vec {
 
 // MulPosition multiplies a V2 position with a rotate/translate matrix.
 func (a m33) MulPosition(b r2.Vec) r2.Vec {
-	return r2.Vec{a.x00*b.X + a.x01*b.Y + a.x02,
-		a.x10*b.X + a.x11*b.Y + a.x12}
+	return d2.NewV2(a.x00*b.X+a.x01*b.Y+a.x02,
+		a.x10*b.X+a.x11*b.Y+a.x12)
 }
 
 // MulPosition multiplies a V2 position with a rotate matrix.
 func (a m22) MulPosition(b r2.Vec) r2.Vec {
-	return r2.Vec{a.x00*b.X + a.x01*b.Y,
-		a.x10*b.X + a.x11*b.Y}
+	return d2.NewV2(a.x00*b.X+a.x01*b.Y,
+		a.x10*b.X+a.x11*b.Y)
 }
 
 // MulVertices multiples a set of V2 vertices by a rotate/translate matrix.
@@ -414,14 +414,14 @@ func (a m44) MulBox(box d3.Box) d3.Box {
 	za, zb = d3.MinElem(za, zb), d3.MaxElem(za, zb)
 	min := xa.Add(ya).Add(za).Add(t)
 	max := xb.Add(yb).Add(zb).Add(t)
-	return d3.Box{min, max}
+	return d3.Box{Min: min, Max: max}
 }
 
 // MulBox rotates/translates a 2d bounding box and resizes for axis-alignment.
 func (a m33) MulBox(box d2.Box) d2.Box {
-	r := r2.Vec{a.x00, a.x10}
-	u := r2.Vec{a.x01, a.x11}
-	t := r2.Vec{a.x02, a.x12}
+	r := d2.NewV2(a.x00, a.x10)
+	u := d2.NewV2(a.x01, a.x11)
+	t := d2.NewV2(a.x02, a.x12)
 	xa := r2.Scale(box.Min.X, r)
 	xb := r2.Scale(box.Max.X, r)
 	ya := r2.Scale(box.Min.Y, u)
@@ -430,7 +430,7 @@ func (a m33) MulBox(box d2.Box) d2.Box {
 	ya, yb = d2.MinElem(ya, yb), d2.MaxElem(ya, yb)
 	min := xa.Add(ya).Add(t)
 	max := xb.Add(yb).Add(t)
-	return d2.Box{min, max}
+	return d2.Box{Min: min, Max: max}
 }
 
 // Determinant returns the determinant of a 4x4 matrix.

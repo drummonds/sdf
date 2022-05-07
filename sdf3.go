@@ -53,39 +53,41 @@ func Revolve3D(sdf SDF2, theta float64) SDF3 {
 	sin := math.Sin(s.theta)
 	cos := math.Cos(s.theta)
 	// pre-calculate the normal to the theta line
-	s.norm = r2.Vec{-sin, cos}
+	s.norm = d2.NewV2(-sin, cos)
 	// work out the bounding box
 	var vset d2.Set
 	if theta == 0 {
-		vset = []r2.Vec{{1, 1}, {-1, -1}}
+		vset = []r2.Vec{d2.NewV2(1, 1), d2.NewV2(-1, -1)}
 	} else {
-		vset = []r2.Vec{{0, 0}, {1, 0}, {cos, sin}}
+		vset = []r2.Vec{d2.NewV2(0, 0), d2.NewV2(1, 0), d2.NewV2(cos, sin)}
 		if s.theta > 0.5*pi {
-			vset = append(vset, r2.Vec{0, 1})
+			vset = append(vset, d2.NewV2(0, 1))
 		}
 		if s.theta > pi {
-			vset = append(vset, r2.Vec{-1, 0})
+			vset = append(vset, d2.NewV2(-1, 0))
 		}
 		if s.theta > 1.5*pi {
-			vset = append(vset, r2.Vec{0, -1})
+			vset = append(vset, d2.NewV2(0, -1))
 		}
 	}
 	bb := s.sdf.BoundingBox()
 	l := math.Max(math.Abs(bb.Min.X), math.Abs(bb.Max.X))
 	vmin := r2.Scale(l, vset.Min())
 	vmax := r2.Scale(l, vset.Max())
-	s.bb = d3.Box{r3.Vec{vmin.X, vmin.Y, bb.Min.Y}, r3.Vec{vmax.X, vmax.Y, bb.Max.Y}}
+	s.bb = d3.Box{
+		Min: d3.NewV3(vmin.X, vmin.Y, bb.Min.Y),
+		Max: d3.NewV3(vmax.X, vmax.Y, bb.Max.Y)}
 	return &s
 }
 
 // Evaluate returns the minimum distance to a solid of revolution.
 func (s *revolution3) Evaluate(p r3.Vec) float64 {
 	x := math.Sqrt(p.X*p.X + p.Y*p.Y)
-	a := s.sdf.Evaluate(r2.Vec{x, p.Z})
+	a := s.sdf.Evaluate(d2.NewV2(x, p.Z))
 	b := a
 	if s.theta != 0 {
 		// combine two vertical planes to give an intersection wedge
-		d := s.norm.Dot(r2.Vec{p.X, p.Y})
+		d := s.norm.Dot(d2.NewV2(p.X, p.Y))
 		if s.theta < pi {
 			b = math.Max(-p.Y, d) // intersect
 		} else {
@@ -117,7 +119,9 @@ func Extrude3D(sdf SDF2, height float64) SDF3 {
 	s.extrude = NormalExtrude
 	// work out the bounding box
 	bb := sdf.BoundingBox()
-	s.bb = d3.Box{r3.Vec{bb.Min.X, bb.Min.Y, -s.height}, r3.Vec{bb.Max.X, bb.Max.Y, s.height}}
+	s.bb = d3.Box{
+		Min: d3.NewV3(bb.Min.X, bb.Min.Y, -s.height),
+		Max: d3.NewV3(bb.Max.X, bb.Max.Y, s.height)}
 	return &s
 }
 
@@ -130,7 +134,9 @@ func TwistExtrude3D(sdf SDF2, height, twist float64) SDF3 {
 	// work out the bounding box
 	bb := sdf.BoundingBox()
 	l := r2.Norm(bb.Max)
-	s.bb = d3.Box{r3.Vec{-l, -l, -s.height}, r3.Vec{l, l, s.height}}
+	s.bb = d3.Box{
+		Min: d3.NewV3(-l, -l, -s.height),
+		Max: d3.NewV3(l, l, s.height)}
 	return &s
 }
 
@@ -142,8 +148,12 @@ func ScaleExtrude3D(sdf SDF2, height float64, scale r2.Vec) SDF3 {
 	s.extrude = ScaleExtrude(height, scale)
 	// work out the bounding box
 	bb := sdf.BoundingBox()
-	bb = bb.Extend(d2.Box{d2.MulElem(bb.Min, scale), d2.MulElem(bb.Max, scale)})
-	s.bb = d3.Box{r3.Vec{bb.Min.X, bb.Min.Y, -s.height}, r3.Vec{bb.Max.X, bb.Max.Y, s.height}}
+	bb = bb.Extend(d2.Box{
+		Min: d2.MulElem(bb.Min, scale),
+		Max: d2.MulElem(bb.Max, scale)})
+	s.bb = d3.Box{
+		Min: d3.NewV3(bb.Min.X, bb.Min.Y, -s.height),
+		Max: d3.NewV3(bb.Max.X, bb.Max.Y, s.height)}
 	return &s
 }
 
@@ -155,9 +165,13 @@ func ScaleTwistExtrude3D(sdf SDF2, height, twist float64, scale r2.Vec) SDF3 {
 	s.extrude = ScaleTwistExtrude(height, twist, scale)
 	// work out the bounding box
 	bb := sdf.BoundingBox()
-	bb = bb.Extend(d2.Box{d2.MulElem(bb.Min, scale), d2.MulElem(bb.Max, scale)})
+	bb = bb.Extend(d2.Box{
+		Min: d2.MulElem(bb.Min, scale),
+		Max: d2.MulElem(bb.Max, scale)})
 	l := r2.Norm(bb.Max)
-	s.bb = d3.Box{r3.Vec{-l, -l, -s.height}, r3.Vec{l, l, s.height}}
+	s.bb = d3.Box{
+		Min: d3.NewV3(-l, -l, -s.height),
+		Max: d3.NewV3(l, l, s.height)}
 	return &s
 }
 
@@ -215,8 +229,8 @@ func ExtrudeRounded3D(sdf SDF2, height, round float64) SDF3 {
 	// work out the bounding box
 	bb := sdf.BoundingBox()
 	s.bb = d3.Box{
-		Min: r3.Sub(r3.Vec{bb.Min.X, bb.Min.Y, -s.height}, d3.Elem(round)),
-		Max: r3.Add(r3.Vec{bb.Max.X, bb.Max.Y, s.height}, d3.Elem(round)),
+		Min: r3.Sub(d3.NewV3(bb.Min.X, bb.Min.Y, -s.height), d3.Elem(round)),
+		Max: r3.Add(d3.NewV3(bb.Max.X, bb.Max.Y, s.height), d3.Elem(round)),
 	}
 	return &s
 }
@@ -224,7 +238,7 @@ func ExtrudeRounded3D(sdf SDF2, height, round float64) SDF3 {
 // Evaluate returns the minimum distance to a rounded extrusion.
 func (s *extrudeRounded) Evaluate(p r3.Vec) float64 {
 	// sdf for the projected 2d surface
-	a := s.sdf.Evaluate(r2.Vec{p.X, p.Y})
+	a := s.sdf.Evaluate(d2.NewV2(p.X, p.Y))
 	b := math.Abs(p.Z) - s.height
 	var d float64
 	if b > 0 {
@@ -276,7 +290,7 @@ func Loft3D(sdf0, sdf1 SDF2, height, round float64) SDF3 {
 		return empty3{}
 	case height < 2*round:
 		return empty3{} // should this panic?
-		panic("height < 2 * round")
+		// panic("height < 2 * round")
 	}
 	s := loft3{
 		sdf0:   sdf0,
@@ -289,8 +303,8 @@ func Loft3D(sdf0, sdf1 SDF2, height, round float64) SDF3 {
 	bb1 := sdf1.BoundingBox()
 	bb := bb0.Extend(bb1)
 	s.bb = d3.Box{
-		Min: r3.Sub(r3.Vec{bb.Min.X, bb.Min.Y, -s.height}, d3.Elem(round)),
-		Max: r3.Add(r3.Vec{bb.Max.X, bb.Max.Y, s.height}, d3.Elem(round))}
+		Min: r3.Sub(d3.NewV3(bb.Min.X, bb.Min.Y, -s.height), d3.Elem(round)),
+		Max: r3.Add(d3.NewV3(bb.Max.X, bb.Max.Y, s.height), d3.Elem(round))}
 	return &s
 }
 
@@ -299,8 +313,8 @@ func (s *loft3) Evaluate(p r3.Vec) float64 {
 	// work out the mix value as a function of height
 	k := clamp((0.5*p.Z/s.height)+0.5, 0, 1)
 	// mix the 2D SDFs
-	a0 := s.sdf0.Evaluate(r2.Vec{p.X, p.Y})
-	a1 := s.sdf1.Evaluate(r2.Vec{p.X, p.Y})
+	a0 := s.sdf0.Evaluate(d2.NewV2(p.X, p.Y))
+	a1 := s.sdf1.Evaluate(d2.NewV2(p.X, p.Y))
 	a := mix(a0, a1, k)
 
 	b := math.Abs(p.Z) - s.height
@@ -374,7 +388,7 @@ type scaleUniform3 struct {
 
 // ScaleUniform3D uniformly scales an SDF3 on all axes.
 func ScaleUniform3D(sdf SDF3, k float64) SDF3 {
-	m := Scale3d(r3.Vec{k, k, k})
+	m := Scale3d(d3.NewV3(k, k, k))
 	return &scaleUniform3{
 		sdf:  sdf,
 		k:    k,
@@ -627,7 +641,7 @@ func (s *array3) Evaluate(p r3.Vec) float64 {
 	for j := 0; j < s.num[0]; j++ {
 		for k := 0; k < s.num[1]; k++ {
 			for l := 0; l < s.num[2]; l++ {
-				x := p.Sub(r3.Vec{float64(j) * s.step.X, float64(k) * s.step.Y, float64(l) * s.step.Z})
+				x := p.Sub(d3.NewV3(float64(j)*s.step.X, float64(k)*s.step.Y, float64(l)*s.step.Z))
 				d = s.min(d, s.sdf.Evaluate(x))
 			}
 		}
@@ -671,7 +685,7 @@ func RotateUnion3D(sdf SDF3, num int, step m44) SDF3Union {
 		mulVertices3(v, step)
 		// v.MulVertices(step)
 	}
-	s.bb = d3.Box{bbMin, bbMax}
+	s.bb = d3.Box{Min: bbMin, Max: bbMax}
 	return &s
 }
 
@@ -727,16 +741,18 @@ func RotateCopy3D(sdf SDF3, num int) SDF3 {
 			rmax = l
 		}
 	}
-	s.bb = d3.Box{r3.Vec{-rmax, -rmax, zmin}, r3.Vec{rmax, rmax, zmax}}
+	s.bb = d3.Box{
+		Min: d3.NewV3(-rmax, -rmax, zmin),
+		Max: d3.NewV3(rmax, rmax, zmax)}
 	return &s
 }
 
 // Evaluate returns the minimum distance to a rotate/copy SDF3.
 func (s *rotateCopy3) Evaluate(p r3.Vec) float64 {
 	// Map p to a point in the first copy sector.
-	p2 := r2.Vec{p.X, p.Y}
+	p2 := d2.NewV2(p.X, p.Y)
 	p2 = d2.PolarToXY(r2.Norm(p2), sawTooth(math.Atan2(p2.Y, p2.X), s.theta))
-	return s.sdf.Evaluate(r3.Vec{p2.X, p2.Y, p.Z})
+	return s.sdf.Evaluate(d3.NewV3(p2.X, p2.Y, p.Z))
 }
 
 // BoundingBox returns the bounding box of a rotate/copy SDF3.
@@ -831,7 +847,7 @@ func Shell3D(sdf SDF3, thickness float64) SDF3 {
 	return &shell3{
 		sdf:   sdf,
 		delta: 0.5 * thickness,
-		bb:    sdf.BoundingBox().Enlarge(r3.Vec{thickness, thickness, thickness}),
+		bb:    sdf.BoundingBox().Enlarge(d3.NewV3(thickness, thickness, thickness)),
 	}
 }
 

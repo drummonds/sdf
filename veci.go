@@ -6,7 +6,10 @@ Integer 2D/3D Vectors
 
 package sdf
 
-import "gonum.org/v1/gonum/spatial/r3"
+import (
+	"github.com/drummonds/sdf/internal/d3"
+	"gonum.org/v1/gonum/spatial/r3"
+)
 
 // V2i is a 2D integer vector.
 type V2i [2]int
@@ -36,12 +39,12 @@ func (a V3i) AddScalar(b int) V3i {
 
 // ToV3.Vec converts V3i (integer) to r3.Vec (float).
 func (a V3i) ToV3() r3.Vec {
-	return r3.Vec{float64(a[0]), float64(a[1]), float64(a[2])}
+	return d3.NewV3(float64(a[0]), float64(a[1]), float64(a[2]))
 }
 
 // ToV3.Vec converts V2i (integer) to r3.Vec (float).
 func (a V2i) ToV3(newZ float64) r3.Vec {
-	return r3.Vec{float64(a[0]), float64(a[1]), newZ}
+	return d3.NewV3(float64(a[0]), float64(a[1]), newZ)
 }
 
 // Add adds two vectors. Return v = a + b.

@@ -73,10 +73,10 @@ func (a Box) Contains(v r2.Vec) bool {
 // Vertices returns a slice of 2d box corner vertices.
 func (a Box) Vertices() Set {
 	v := make([]r2.Vec, 4)
-	v[0] = a.Min                    // bl
-	v[1] = r2.Vec{a.Max.X, a.Min.Y} // br
-	v[2] = r2.Vec{a.Min.X, a.Max.Y} // tl
-	v[3] = a.Max                    // tr
+	v[0] = a.Min                   // bl
+	v[1] = NewV2(a.Max.X, a.Min.Y) // br
+	v[2] = NewV2(a.Min.X, a.Max.Y) // tl
+	v[3] = a.Max                   // tr
 	return v
 }
 
@@ -87,7 +87,7 @@ func (a Box) BottomLeft() r2.Vec {
 
 // TopLeft returns the top left corner of a 2d bounding box.
 func (a Box) TopLeft() r2.Vec {
-	return r2.Vec{a.Min.X, a.Max.Y}
+	return NewV2(a.Min.X, a.Max.Y)
 }
 
 // MinMaxDist2 returns the minimum and maximum dist * dist from a point to a box.
@@ -129,7 +129,7 @@ func (a Box) MinMaxDist2(p r2.Vec) r2.Vec {
 		}
 	}
 
-	return r2.Vec{minDist2, maxDist2}
+	return NewV2(minDist2, maxDist2)
 }
 
 // Random returns a random point within a bounding box.
